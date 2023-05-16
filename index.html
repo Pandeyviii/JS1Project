@@ -8,18 +8,19 @@
 </head>
 <body>
     <form onsubmit="addToLocalStorage(event)">
-        <label for="">Name</label>
-        <input type="text" name="userName">
-        <label for="">Email</label>
-        <input type="email" name="userEmail">
-        <label for="">Phone</label>
-        <input type="tel" name="phoneNumber">
-        <button>submit</button>
+        <label for="">chooseExpenseAmount</label>
+        <input type="text" name="userName" id="userNameInput">
+        <label for="">chooseDescription</label>
+        <input type="email" name="userEmail" id="userEmailInput">
+        <label for="">chooseAcategory</label>
+        <input type="tel" name="phoneNumber" id="userPhoneInput">
+        <button>Add Expense</button>
         <ul id="listOfItems">
 
         </ul>
 
     </form>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
         function addToLocalStorage(event){
             event.preventDefault();
@@ -30,17 +31,60 @@
             // localStorage.setItem('email',email);
             // localStorage.setItem('phone',phone);
             const obj={
-                name,
-                email,
-                phone
-
+                name:name,
+                email:email,
+                phone:phone
             }
-            localStorage.setItem(email,JSON.stringify(obj));
+           showTheOutput(obj);
+           localStorage.setItem(email,JSON.stringify(obj));
+        //    axios.post("https://crudcrud.com/api/cfbacf43f16c427683345935be6dfbd3/appointmentData",obj)
+        //    .then((res)=>console.log(res))
+        //    .catch((err)=>console.log(err));
+
+        }
+        window.addEventListener("DOMContentLoaded",()=>{
+            const localStorageObj=localStorage;
+            const localStorageKey=Object.keys(localStorageObj)
+            // axios.get("https://crudcrud.com/api/cfbacf43f16c427683345935be6dfbd3/appointmentData")
+            // .then((response)=>{
+            //     console.log(response);
+            //     for(var i=0;i<response.data.length;i++){
+            //         showTheOutput(response.data[i]);
+            //     }
+            // })
+            // .catch((err)=>console.log(err));
+            for (var i = 0; i < localStorageKey.length; i++) {
+              const key = localStorageKey[i];
+              const localStorageData=localStorageObj[key]
+              const userDetailsObj=JSON.parse(localStorageData);
+             showTheOutput(userDetailsObj);
+           }
+           
+        })
+        function showTheOutput(obj){
             var parent=document.getElementById("listOfItems");
             var child=document.createElement('li');
             child.textContent=obj.name+"-"+obj.email+"-"+obj.phone;
+            var deleteBtn=document.createElement('input');
+            var editBtn=document.createElement('input');
+            editBtn.type="button";
+            editBtn.value="edit";
+            deleteBtn.type="button";
+            deleteBtn.value="Delete";
+            deleteBtn.onclick=()=>{
+                localStorage.removeItem(obj.email);
+                parent.removeChild(child);
+            }
+            editBtn.onclick=()=>{
+                localStorage.removeItem(obj.email);
+                parent.removeChild(child)
+                document.getElementById("userNameInput").value=obj.name;
+                document.getElementById("userEmailInput").value=obj.email;
+                document.getElementById("userPhoneInput").value=obj.phone;
+            }
+            child.appendChild(deleteBtn);
+            child.appendChild(editBtn);
             parent.appendChild(child);
-
         }
 
     </script>
